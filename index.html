@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rubrica — Calculadoras contábeis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B3A;
+    --ink-2:#28394C;
+    --ink-3:#33465C;
+    --paper:#F6F3EC;
+    --paper-2:#ECE7D9;
+    --gold:#B07F2E;
+    --emerald:#3C7A58;
+    --text-light:#F6F3EC;
+    --text-dark:#1C2B3A;
+    --muted:#5E6B72;
+    --muted-dark:#5B6660;
+    --danger:#B3543F;
+    --radius:6px;
+    --serif:'Fraunces',serif;
+    --sans:'IBM Plex Sans',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); line-height:1.6; font-size:16px;
+  }
+  h1,h2,h3{font-family:var(--serif); font-weight:500; margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .mono{font-family:var(--mono);}
+
+  /* ---- header ---- */
+  header{
+    position:sticky; top:0; z-index:40; background:var(--paper);
+    border-bottom:1px solid rgba(28,43,58,0.12);
+  }
+  .header-inner{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
+  .logo{font-family:var(--serif); font-size:22px; letter-spacing:0.3px; color:var(--ink);}
+  .logo span{color:var(--gold);}
+  nav.mainnav{display:flex; align-items:center; gap:28px;}
+  nav.mainnav a{
+    background:none; border:none; color:var(--ink); font-family:var(--sans);
+    font-size:14px; cursor:pointer; padding:0; opacity:0.75; text-decoration:none;
+  }
+  nav.mainnav a:hover, nav.mainnav a.active{opacity:1;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; border-radius:var(--radius);
+    padding:10px 18px; font-family:var(--sans); font-size:14px; font-weight:500;
+    cursor:pointer; border:1px solid transparent; text-decoration:none;
+  }
+  .btn-gold{background:var(--gold); color:#FBF6EC;}
+  .btn-ghost{background:transparent; border:1px solid rgba(28,43,58,0.3); color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--gold);}
+  .btn-block{width:100%; justify-content:center;}
+
+  /* ---- hero ---- */
+  .hero{padding:72px 0 56px; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;}
+  .hero h1{font-size:40px; line-height:1.15; max-width:520px;}
+  .hero p.lead{color:var(--muted); font-size:16px; max-width:440px; margin:18px 0 28px;}
+  .hero-ctas{display:flex; gap:12px;}
+  .ledger-card{
+    background:#FFFFFF; color:var(--text-dark); border-radius:10px; padding:26px 28px;
+    box-shadow:0 24px 48px rgba(28,43,58,0.14); border:1px solid rgba(28,43,58,0.08);
+  }
+  .ledger-card .row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(27,36,32,0.12); font-size:13px;}
+  .ledger-card .row:last-child{border-bottom:none;}
+  .ledger-card .row .code{color:var(--muted-dark); font-family:var(--mono);}
+  .ledger-card .head{font-family:var(--serif); font-size:15px; margin-bottom:12px;}
+
+  /* ---- section shell ---- */
+  section{padding:64px 0;}
+  .section-label{font-size:13px; color:var(--gold); margin-bottom:10px;}
+  .section-title{font-size:28px; max-width:560px; margin-bottom:8px;}
+  .section-sub{color:var(--muted); max-width:520px; font-size:15px;}
+
+  /* ---- steps ---- */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:36px;}
+  .step{border-left:1px solid rgba(28,43,58,0.16); padding-left:18px;}
+  .step .num{font-family:var(--mono); color:var(--gold); font-size:13px;}
+  .step h3{font-size:17px; margin:8px 0 6px;}
+  .step p{color:var(--muted); font-size:14px; margin:0;}
+
+  /* ---- pricing row ---- */
+  .toggle-row{display:flex; align-items:center; justify-content:space-between; margin:36px 0 0;}
+
+  /* ---- ledger table (products) ---- */
+  .ledger-table{margin-top:22px; border-top:1px solid rgba(28,43,58,0.18);}
+  .ledger-item{border-bottom:1px solid rgba(28,43,58,0.14); padding:22px 0;}
+  .ledger-item-row{display:grid; grid-template-columns:56px 1fr auto; gap:18px; align-items:start; cursor:pointer;}
+  .ledger-item .code{font-family:var(--mono); font-size:13px; color:var(--muted); padding-top:2px;}
+  .ledger-item h3{font-size:18px; margin-bottom:4px;}
+  .ledger-item p.desc{color:var(--muted); font-size:14px; margin:0; max-width:460px;}
+  .ledger-item .price-block{text-align:right; min-width:150px;}
+  .ledger-item .price{font-family:var(--mono); font-size:20px;}
+  .ledger-item .price .suffix{font-size:12px; color:var(--muted);}
+  .ledger-item .combo-badge{
+    display:inline-block; font-size:11px; background:rgba(60,122,88,0.16); color:#2C6046;
+    padding:3px 8px; border-radius:4px; margin-bottom:6px;
+  }
+  .ledger-item .details{
+    max-height:0; overflow:hidden; transition:max-height 0.25s ease;
+  }
+  .ledger-item.open .details{max-height:220px; margin-top:16px;}
+  .details-inner{display:grid; grid-template-columns:1fr auto; gap:20px; align-items:end; padding-top:16px; border-top:1px dashed rgba(28,43,58,0.2);}
+  .details-inner ul{margin:0; padding-left:18px; color:var(--muted); font-size:13px; line-height:1.8;}
+
+  /* ---- faq ---- */
+  .faq-item{border-bottom:1px solid rgba(28,43,58,0.14); padding:18px 0;}
+  .faq-q{display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-size:15px; font-weight:500;}
+  .faq-a{color:var(--muted); font-size:14px; max-height:0; overflow:hidden; transition:max-height 0.2s ease;}
+  .faq-item.open .faq-a{max-height:140px; margin-top:10px;}
+
+  footer{border-top:1px solid rgba(28,43,58,0.12); padding:40px 0; color:var(--muted); font-size:13px;}
+  footer .foot-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
+  /* ---- login / account views (paper pages) ---- */
+  .paper-page{background:var(--paper); color:var(--text-dark); min-height:100vh;}
+  .paper-page .wrap{padding-top:56px; padding-bottom:56px;}
+  .paper-nav{display:flex; justify-content:space-between; align-items:center; padding:20px 0;}
+  .paper-nav .logo{color:var(--text-dark);}
+  .paper-nav .logo span{color:var(--emerald);}
+  .card{background:#fff; border:1px solid rgba(27,36,32,0.1); border-radius:10px; padding:32px;}
+  .login-card{max-width:380px; margin:40px auto 0;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:13px; color:var(--muted-dark); margin-bottom:6px;}
+  .field input{
+    width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid rgba(27,36,32,0.2);
+    font-family:var(--sans); font-size:14px; background:#fff; color:var(--text-dark);
+  }
+  .field input:focus{outline:2px solid var(--emerald); outline-offset:1px;}
+
+  /* account / receipt */
+  .account-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .receipt{background:#fff; border:1px solid rgba(27,36,32,0.1); border-radius:10px; margin-top:14px; overflow:hidden;}
+  .receipt-row{display:grid; grid-template-columns:52px 1fr auto auto; gap:14px; align-items:center; padding:16px 20px; border-bottom:1px solid rgba(27,36,32,0.08);}
+  .receipt-row:last-child{border-bottom:none;}
+  .receipt-row .code{font-family:var(--mono); font-size:12px; color:var(--muted-dark);}
+  .receipt-row .name{font-size:14px; font-weight:500;}
+  .receipt-row .status{font-size:12px; color:var(--emerald); font-family:var(--mono);}
+  .receipt-row .dl{
+    display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--emerald);
+    border:1px solid rgba(76,139,109,0.4); border-radius:var(--radius); padding:6px 12px; cursor:pointer; background:none;
+  }
+
+  /* ---- checkout drawer ---- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(10,16,13,0.6); z-index:100;
+    display:none; align-items:stretch; justify-content:flex-end;
+  }
+  .overlay.show{display:flex;}
+  .drawer{
+    width:420px; max-width:92vw; background:var(--paper); color:var(--text-dark);
+    padding:32px; overflow-y:auto;
+  }
+  .drawer-close{background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-dark);}
+  .drawer-steps{display:flex; gap:6px; margin:20px 0 24px;}
+  .drawer-steps .dot{flex:1; height:3px; background:rgba(27,36,32,0.15); border-radius:2px;}
+  .drawer-steps .dot.done{background:var(--emerald);}
+  .summary-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(27,36,32,0.1); font-size:14px;}
+  .summary-total{display:flex; justify-content:space-between; padding:16px 0 0; font-family:var(--mono); font-size:18px;}
+  .pay-methods{display:flex; gap:8px; margin-bottom:18px;}
+  .pay-methods button{
+    flex:1; padding:10px; border-radius:var(--radius); border:1px solid rgba(27,36,32,0.2); background:#fff;
+    font-size:13px; cursor:pointer;
+  }
+  .pay-methods button.active{border-color:var(--emerald); background:rgba(76,139,109,0.1); color:var(--emerald); font-weight:500;}
+  .confirm-icon{width:48px; height:48px; border-radius:50%; background:rgba(76,139,109,0.15); color:var(--emerald); display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:16px;}
+
+  #view-home{display:block;}
+  #view-login{display:none;}
+  #view-account{display:none;}
+
+  @media (max-width: 760px){
+    .hero{grid-template-columns:1fr; padding-top:40px;}
+    .steps{grid-template-columns:1fr;}
+    nav.mainnav{display:none;}
+    .ledger-item-row{grid-template-columns:36px 1fr; }
+    .price-block{grid-column:2/3; text-align:left; margin-top:10px;}
+    .details-inner{grid-template-columns:1fr;}
+    .receipt-row{grid-template-columns:32px 1fr; row-gap:8px;}
+    .receipt-row .status, .receipt-row .dl{grid-column:2/3;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HOME ============ -->
+<div id="view-home">
+  <header>
+    <div class="wrap header-inner">
+      <div class="logo">Rubrica<span>.</span></div>
+      <nav class="mainnav">
+        <a href="index.html" class="active">Início / Calculadoras</a>
+        <a href="como-funciona.html">Como Funciona</a>
+        <a href="guias-mei.html">Guias MEI</a>
+        <a href="perguntas.html">Perguntas Frequentes</a>
+      </nav>
+      <button class="btn btn-gold" onclick="scrollToId('produtos')">Ver planos</button>
+    </div>
+  </header>
+
+  <div class="wrap hero">
+    <div>
+      <h1>Planilhas que fecham a conta antes de você abrir o Excel</h1>
+      <p class="lead">Calculadoras prontas para precificar honorários, apurar o Simples Nacional e simular o Fator R. Compre a que precisa ou leve o combo completo, com pagamento único.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-gold" onclick="scrollToId('produtos')">Ver calculadoras</button>
+        <button class="btn btn-ghost" onclick="scrollToId('funciona')">Como funciona</button>
+      </div>
+    </div>
+    <div class="ledger-card">
+      <p class="head">Plano de contas</p>
+      <div class="row"><span class="code">1.01</span><span>Honorários</span></div>
+      <div class="row"><span class="code">1.02</span><span>Simples Nacional (DAS)</span></div>
+      <div class="row"><span class="code">1.03</span><span>Fator R</span></div>
+      <div class="row"><span class="code">1.00</span><span>Combo completo</span></div>
+    </div>
+  </div>
+
+  <section id="funciona">
+    <div class="wrap">
+      <p class="section-label">Como funciona</p>
+      <h2 class="section-title">Da escolha ao download, em três passos</h2>
+      <div class="steps">
+        <div class="step">
+          <p class="num">01</p>
+          <h3>Escolha a calculadora</h3>
+          <p>Veja o que cada planilha resolve antes de comprar.</p>
+        </div>
+        <div class="step">
+          <p class="num">02</p>
+          <h3>Compre avulso ou no combo</h3>
+          <p>Pagamento único, sem mensalidade.</p>
+        </div>
+        <div class="step">
+          <p class="num">03</p>
+          <h3>Baixe na sua conta</h3>
+          <p>O arquivo em Excel fica disponível para download quando quiser.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="produtos">
+    <div class="wrap">
+      <p class="section-label">Calculadoras</p>
+      <h2 class="section-title">Escolha avulso ou leve o combo completo</h2>
+      <p class="section-sub">Toque em cada item para ver o que a planilha calcula.</p>
+
+      <div class="toggle-row">
+        <span class="mono" style="font-size:13px; color:var(--muted);">4 itens</span>
+        <span class="mono" style="font-size:13px; color:var(--muted);">Pagamento único</span>
+      </div>
+
+      <div class="ledger-table" id="ledger-table"></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <p class="section-label">Perguntas frequentes</p>
+      <h2 class="section-title">Antes de comprar</h2>
+      <div style="margin-top:24px;">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>A planilha funciona no Excel e no Google Sheets?</span><span>+</span></div>
+          <div class="faq-a">Sim. O arquivo é .xlsx e abre normalmente nas duas ferramentas, sem plugin.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Posso usar para vários clientes do escritório?</span><span>+</span></div>
+          <div class="faq-a">Sim, a licença é por usuário, não por cliente atendido. Uma cópia serve para todos os seus clientes.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>As tabelas e alíquotas são atualizadas?</span><span>+</span></div>
+          <div class="faq-a">A versão da planilha é a vigente na data da compra, com as tabelas e alíquotas daquele momento.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Como recebo o arquivo depois de comprar?</span><span>+</span></div>
+          <div class="faq-a">Pelo botão "Minha conta", disponível assim que o pagamento é confirmado.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-row">
+      <span>Rubrica — calculadoras contábeis em Excel</span>
+      <span>contato@rubrica.com.br</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<div id="view-login" class="paper-page">
+  <div class="wrap">
+    <div class="paper-nav">
+      <div class="logo">Rubrica<span>.</span></div>
+      <button class="btn btn-ghost" style="border-color:rgba(27,36,32,0.25); color:var(--text-dark);" onclick="showView('home')">Voltar ao site</button>
+    </div>
+    <div class="card login-card">
+      <h2 style="font-size:22px; margin-bottom:6px;">Entrar na sua conta</h2>
+      <p style="color:var(--muted-dark); font-size:14px; margin:0 0 24px;">Acesse as calculadoras que você comprou.</p>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" placeholder="nome@escritorio.com.br">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-gold btn-block" onclick="showView('account')">Entrar</button>
+      <p style="text-align:center; font-size:13px; margin-top:16px;"><a href="#" style="color:var(--emerald);">Esqueci minha senha</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ACCOUNT / DASHBOARD ============ -->
+<div id="view-account" class="paper-page">
+  <div class="wrap">
+    <div class="paper-nav">
+      <div class="logo">Rubrica<span>.</span></div>
+      <button class="btn btn-ghost" style="border-color:rgba(27,36,32,0.25); color:var(--text-dark);" onclick="showView('home')">Sair</button>
+    </div>
+    <div class="account-head">
+      <h2 style="font-size:22px;">Minha conta</h2>
+    </div>
+    <p style="color:var(--muted-dark); font-size:14px; margin:0 0 6px;">Suas calculadoras compradas ficam aqui, prontas para baixar.</p>
+
+    <div class="receipt">
+      <div class="receipt-row">
+        <span class="code">1.01</span>
+        <span class="name">Calculadora de honorários</span>
+        <span class="status">único · comprado</span>
+        <button class="dl">Baixar .xlsx</button>
+      </div>
+      <div class="receipt-row">
+        <span class="code">1.02</span>
+        <span class="name">Simples Nacional (DAS)</span>
+        <span class="status">único · comprado</span>
+        <button class="dl">Baixar .xlsx</button>
+      </div>
+    </div>
+
+    <p style="margin-top:28px;"><button class="btn btn-ghost" style="border-color:rgba(27,36,32,0.25); color:var(--text-dark);" onclick="showView('home')">Ver outras calculadoras</button></p>
+  </div>
+</div>
+
+<!-- ============ CHECKOUT DRAWER ============ -->
+<div class="overlay" id="checkout-overlay">
+  <div class="drawer">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-size:18px;">Comprar</h3>
+      <button class="drawer-close" onclick="closeCheckout()">×</button>
+    </div>
+    <div class="drawer-steps">
+      <div class="dot" id="dot-1"></div>
+      <div class="dot" id="dot-2"></div>
+      <div class="dot" id="dot-3"></div>
+    </div>
+
+    <div id="checkout-step-1">
+      <p style="font-size:13px; color:var(--muted-dark); margin-bottom:8px;">Resumo do pedido</p>
+      <div class="summary-row"><span id="co-name">—</span><span id="co-mode" class="mono">—</span></div>
+      <div class="summary-total"><span>Total</span><span id="co-price">—</span></div>
+      <button class="btn btn-gold btn-block" style="margin-top:24px;" onclick="checkoutStep(2)">Continuar para pagamento</button>
+    </div>
+
+    <div id="checkout-step-2" style="display:none;">
+      <p style="font-size:13px; color:var(--muted-dark); margin-bottom:12px;">Forma de pagamento</p>
+      <div class="pay-methods">
+        <button class="active" onclick="selectPay(this)">Pix</button>
+        <button onclick="selectPay(this)">Cartão</button>
+        <button onclick="selectPay(this)">Boleto</button>
+      </div>
+      <div class="field"><label>Nome completo</label><input type="text" placeholder="Como consta no documento"></div>
+      <div class="field"><label>E-mail</label><input type="email" placeholder="nome@escritorio.com.br"></div>
+      <button class="btn btn-gold btn-block" onclick="checkoutStep(3)">Confirmar compra</button>
+    </div>
+
+    <div id="checkout-step-3" style="display:none; text-align:center; padding-top:20px;">
+      <div class="confirm-icon" style="margin:0 auto 16px;">✓</div>
+      <h3 style="font-size:18px; margin-bottom:8px;">Compra confirmada</h3>
+      <p style="color:var(--muted-dark); font-size:14px; margin-bottom:24px;">Sua planilha já está disponível para download.</p>
+      <button class="btn btn-gold btn-block" onclick="goToAccountFromCheckout()">Ir para minha conta</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const products = [
+  { code:'1.01', name:'Calculadora de honorários', desc:'Precifica serviços contábeis por porte e complexidade do cliente.', unico:47,
+    fields:['Porte e regime tributário do cliente','Número de notas e movimentações','Folha de pagamento e complexidade do serviço','Sugestão de honorário mensal'] },
+  { code:'1.02', name:'Simples Nacional (DAS)', desc:'Apura a alíquota efetiva e o valor do DAS por faixa e anexo.', unico:57,
+    fields:['RBT12 e receita do mês','Anexo e faixa de enquadramento','Alíquota efetiva calculada','Valor do DAS com partilha por tributo'] },
+  { code:'1.03', name:'Simulador Fator R', desc:'Compara folha e receita para simular o enquadramento no Fator R.', unico:47,
+    fields:['Receita bruta dos últimos 12 meses','Folha de pagamento dos últimos 12 meses','Percentual do Fator R','Anexo aplicável e alerta de proximidade do limite'] },
+  { code:'1.00', name:'Combo completo', desc:'As três calculadoras em uma pasta de trabalho única.', unico:127,
+    fields:['Honorários, Simples Nacional e Fator R juntos','Mesma pasta de trabalho, abas separadas','Um único pagamento para as três planilhas'] },
+];
+
+const table = document.getElementById('ledger-table');
+
+function renderTable(){
+  table.innerHTML = '';
+  products.forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'ledger-item';
+    item.innerHTML = `
+      <div class="ledger-item-row" onclick="toggleItem(${i})">
+        <span class="code">${p.code}</span>
+        <div>
+          ${p.code === '1.00' ? '<span class="combo-badge">Combo</span><br>' : ''}
+          <h3>${p.name}</h3>
+          <p class="desc">${p.desc}</p>
+        </div>
+        <div class="price-block">
+          <div class="price">R$${p.unico}<span class="suffix"> à vista</span></div>
+        </div>
+      </div>
+      <div class="details">
+        <div class="details-inner">
+          <ul>${p.fields.map(f => `<li>${f}</li>`).join('')}</ul>
+          <button class="btn btn-gold" onclick="event.stopPropagation(); openCheckout('${p.name}')">Comprar</button>
+        </div>
+      </div>
+    `;
+    table.appendChild(item);
+  });
+}
+
+function toggleItem(i){
+  const items = document.querySelectorAll('.ledger-item');
+  items[i].classList.toggle('open');
+}
+
+function toggleFaq(el){
+  el.classList.toggle('open');
+}
+
+function scrollToId(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+function showView(name){
+  document.getElementById('view-home').style.display = name === 'home' ? 'block' : 'none';
+  document.getElementById('view-login').style.display = name === 'login' ? 'block' : 'none';
+  document.getElementById('view-account').style.display = name === 'account' ? 'block' : 'none';
+  window.scrollTo(0,0);
+}
+
+let currentProduct = null;
+function openCheckout(name){
+  currentProduct = products.find(p => p.name === name);
+  document.getElementById('co-name').textContent = currentProduct.name;
+  document.getElementById('co-mode').textContent = 'pagamento único';
+  document.getElementById('co-price').textContent = 'R$' + currentProduct.unico;
+  checkoutStep(1);
+  document.getElementById('checkout-overlay').classList.add('show');
+}
+
+function closeCheckout(){
+  document.getElementById('checkout-overlay').classList.remove('show');
+}
+
+function checkoutStep(n){
+  document.getElementById('checkout-step-1').style.display = n === 1 ? 'block' : 'none';
+  document.getElementById('checkout-step-2').style.display = n === 2 ? 'block' : 'none';
+  document.getElementById('checkout-step-3').style.display = n === 3 ? 'block' : 'none';
+  document.getElementById('dot-1').classList.toggle('done', n >= 1);
+  document.getElementById('dot-2').classList.toggle('done', n >= 2);
+  document.getElementById('dot-3').classList.toggle('done', n >= 3);
+}
+
+function selectPay(btn){
+  document.querySelectorAll('.pay-methods button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function goToAccountFromCheckout(){
+  closeCheckout();
+  showView('account');
+}
+
+renderTable();
+</script>
+</body>
+</html>
